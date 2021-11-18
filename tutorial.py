@@ -40,7 +40,7 @@ def wpm_test(stdscr):
         if key in ("KEY_BACKSPACE", '\b', "\x7f"):
             if len(current_text) > 0:
                 current_text.pop()
-        else:
+        elif len(current_text) < len(target_text):
             current_text.append(key)
 
 # set up the main function
