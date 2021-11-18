@@ -1,6 +1,7 @@
 import curses
 from curses import wrapper
 
+# set up console screen for the typing test
 def start_screen(stdscr):
     stdscr.clear()
     stdscr.addstr(1, 0, "Welcome to the Typing Speed Test!")
@@ -8,23 +9,24 @@ def start_screen(stdscr):
     stdscr.refresh()
     stdscr.getkey()
 
+# function to place typed text over top of default text
 def display_text(stdscr, target, current, wpm=0):
     stdscr.addstr(target)
-
+    # test the characters typed to verify if they match default text
     for i, char in enumerate(current):
         correct_char = target[i]
+        # if the input is correct color it green
         color = curses.color_pair(1)
-
+        # if input is incorrect color it red
         if char != correct_char:
             color = curses.color_pair(2)
 
         stdscr.addstr(0, i, char, color)
 
+# set up default text for typing test
 def wpm_test(stdscr):
     target_text = "Hello world this is some test text for the app!"
     current_text = []
-
-
 
     while True:
         stdscr.clear()
@@ -41,8 +43,9 @@ def wpm_test(stdscr):
         else:
             current_text.append(key)
 
-
+# set up the main function
 def main(stdscr):
+    # set up color scheme for typing test
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)
     curses.init_pair(3, curses.COLOR_WHITE, curses.COLOR_BLACK)
