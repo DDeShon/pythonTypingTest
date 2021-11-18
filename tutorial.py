@@ -2,6 +2,7 @@ import curses
 from curses import wrapper
 import time
 import random
+import textwrap
 
 # set up console screen for the typing test
 def start_screen(stdscr):
@@ -14,7 +15,7 @@ def start_screen(stdscr):
 # function to place typed text over top of default text
 def display_text(stdscr, target, current, wpm=0):
     stdscr.addstr(target)
-    stdscr.addstr(1, 0, f"\nWPM: {wpm}")
+    stdscr.addstr(12, 0, f"\nWPM: {wpm}")
 
     # test the characters typed to verify if they match default text
     for i, char in enumerate(current):
@@ -34,7 +35,7 @@ def load_text():
 
 # set up default text for typing test
 def wpm_test(stdscr):
-    target_text = load_text()
+    target_text = textwrap.fill(load_text(), width=110)
     current_text = []
     wpm = 0
     start_time = time.time()
@@ -76,7 +77,7 @@ def main(stdscr):
     start_screen(stdscr)
     while True:
         wpm_test(stdscr)
-        stdscr.addstr(3, 0, "You completed the test! Press any key to continue..")
+        stdscr.addstr(13, 0, "You completed the test! Press any key to continue..")
         key = stdscr.getkey()
 
         # break out of app if 'escape' key is pressed
