@@ -1,5 +1,6 @@
 import curses
 from curses import wrapper
+import time
 
 # set up console screen for the typing test
 def start_screen(stdscr):
@@ -12,6 +13,8 @@ def start_screen(stdscr):
 # function to place typed text over top of default text
 def display_text(stdscr, target, current, wpm=0):
     stdscr.addstr(target)
+    stdscr.addstr(1, 0, f"\nWPM: {wpm}")
+
     # test the characters typed to verify if they match default text
     for i, char in enumerate(current):
         correct_char = target[i]
@@ -27,14 +30,28 @@ def display_text(stdscr, target, current, wpm=0):
 def wpm_test(stdscr):
     target_text = "Hello world this is some test text for the app!"
     current_text = []
+    wpm = 0
+    start_time = time.time()
+    stdscr.nodelay(True)
 
     while True:
+        time_elapsed = max(time.time() - start_time, 1)
+        wpm = round((len(current_text) / (time_elapsed / 60)) / 5)
+
         stdscr.clear()
-        display_text(stdscr, target_text, current_text)
+        display_text(stdscr, target_text, current_text, wpm)
         stdscr.refresh()
 
-        key = stdscr.getkey()
+        if "".join(current_text) == target_text:
+            stdscr.nodelay(False)
+            break
 
+        try:
+            key = stdscr.getkey()
+        except:
+            continue
+
+        # break out of app if 'escape' key is pressed
         if ord(key) == 27:
             break
         if key in ("KEY_BACKSPACE", '\b', "\x7f"):
@@ -51,7 +68,14 @@ def main(stdscr):
     curses.init_pair(3, curses.COLOR_WHITE, curses.COLOR_BLACK)
 
     start_screen(stdscr)
-    wpm_test(stdscr)
+    while True:
+        wpm_test(stdscr)
+        stdscr.addstr(3, 0, "You completed the test! Press any key to continue..")
+        key = stdscr.getkey()
+
+        # break out of app if 'escape' key is pressed
+        if ord(key) == 27:
+            break
 
 
 wrapper(main)
