@@ -1,6 +1,7 @@
 import curses
 from curses import wrapper
 import time
+import random
 
 # set up console screen for the typing test
 def start_screen(stdscr):
@@ -26,9 +27,14 @@ def display_text(stdscr, target, current, wpm=0):
 
         stdscr.addstr(0, i, char, color)
 
+def load_text():
+    with open("text.txt", "r") as f:
+        lines = f.readlines()
+        return random.choice(lines).strip()
+
 # set up default text for typing test
 def wpm_test(stdscr):
-    target_text = "Hello world this is some test text for the app!"
+    target_text = load_text()
     current_text = []
     wpm = 0
     start_time = time.time()
